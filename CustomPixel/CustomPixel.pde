@@ -1,45 +1,48 @@
 //Code from PixelExample6
 
-PImage img1, img2;
+PImage img1, img2, img3;
 ArrayList<Creature> creatures;
-ArrayList<PVector> targets1, targets2;
+ArrayList<PVector> targets1, targets2, targets3;
 int scaler = 2; // will use only every 2nd pixel from the image
 int threshold = 200;
 boolean imageToggled = false;
-color col1, col2;
+color col;
 Player player;
 boolean goal;
 int level = 1;
+PImage currentMap;
 
 void setup() {
   frameRate(60);
   size(50, 50, P2D);  
   img1 = loadImage("maze1.png");
   img2 = loadImage("maze2.jpg");
+  img3 = loadImage("maze3.png");
   
-  // set the window size to the largest sides of each image
-  int w, h;
-  if (img1.width > img2.width) {
-    w = img1.width;
-  } else {
-    w = img2.width;
-  }
-  if (img1.height > img2.height) {
-    h = img1.height;
-  } else {
-    h = img2.height;
-  }
-  surface.setSize(w, h);
+  //defualt sets size to 1000x1000 because all maps are 1000x1000
+  surface.setSize(1000, 1000);
 
   img1.loadPixels();
   img2.loadPixels();
+  img3.loadPixels();
   
   targets1 = new ArrayList<PVector>();
   targets2 = new ArrayList<PVector>();
+  targets3 = new ArrayList<PVector>();
 
-  col1 = color(255, 255, 255);
-  col2 = color(255, 255, 255);
+  col = color(255, 255, 255);
     
+  for (int x = 0; x < img1.width; x += scaler) {
+    for (int y = 0; y < img1.height; y += scaler) {
+      // this translates x and y coordinates into a location in the pixels array
+      int location = x + y * img1.width;
+
+      if (brightness(img1.pixels[location]) < threshold) {
+        targets1.add(new PVector(x, y));
+      }
+    }
+  } 
+  
   for (int x = 0; x < img2.width; x += scaler) {
     for (int y = 0; y < img2.height; y += scaler) {
       // this translates x and y coordinates into a location in the pixels array
@@ -50,22 +53,25 @@ void setup() {
       }
     }
   } 
+  
   creatures = new ArrayList<Creature>();
-  for (int x = 0; x < img1.width; x += scaler) {
-    for (int y = 0; y < img1.height; y += scaler) {
+  for (int x = 0; x < img3.width; x += scaler) {
+    for (int y = 0; y < img3.height; y += scaler) {
       // this translates x and y coordinates into a location in the pixels array
-      int location = x + y * img1.width;
+      int location = x + y * img3.width;
 
-      if (brightness(img1.pixels[location]) < threshold) {
-        int targetIndex = int(random(0, targets2.size()));
-        targets1.add(new PVector(x, y));
-        Creature creature = new Creature(x, y, col1, targets2.get(targetIndex));
+      if (brightness(img3.pixels[location]) < threshold) {
+        //targets should all be same size
+        int targetIndex = int(random(0, targets3.size()));
+        targets3.add(new PVector(x, y));
+        Creature creature = new Creature(x, y, col, targets3.get(targetIndex));
         creatures.add(creature);
       }
     }
   } 
   
-  player = new Player(255);
+  color red = color(250, 125, 125);
+  player = new Player(red);
 }
 
 void draw() { 
@@ -80,7 +86,7 @@ void draw() {
     if (!creature.ready) flipTargets = false;
   }
   
-  print("\nplayer y:"+player.position.y);
+
   if((player.position.y == 0 && level%2 != 0) || (player.position.y == height-1 && level%2 == 0)) {
      goal = true; 
      level++;
@@ -88,41 +94,91 @@ void draw() {
   
   if (flipTargets == true && goal == true) {
     for (Creature creature : creatures) {
-      if (!imageToggled) {
+      if (level == 1) {
         int targetIndex = int(random(0, targets1.size()));
         creature.target = targets1.get(targetIndex);
-        creature.col = col2;
-      } else {
+        creature.col = col;
+      } else if (level == 2) {
         int targetIndex = int(random(0, targets2.size()));
         creature.target = targets2.get(targetIndex);
-        creature.col = col1;
+        creature.col = col;
+      } else if (level == 3) {
+        int targetIndex = int(random(0, targets1.size()));
+        creature.target = targets1.get(targetIndex);
+        creature.col = col;
+      } else if (level == 4) {
+        int targetIndex = int(random(0, targets2.size()));
+        creature.target = targets2.get(targetIndex);
+        creature.col = col;
+      } else if (level == 5) {
+        int targetIndex = int(random(0, targets3.size()));
+        creature.target = targets3.get(targetIndex);
+        creature.col = col;
       }
     }
-    imageToggled = !imageToggled;
-  }
     
-  player.run();
+    
+  }
   
-  surface.setTitle("" + frameRate);
-}
-
-void generateMap(PImage image, ArrayList<PVector> targets) {
+  PVector mouse = new PVector(mouseX, mouseY);
   
-  for (int x = 0; x < image.width; x += scaler) {
-    for (int y = 0; y < image.height; y += scaler) {
-      // this translates x and y coordinates into a location in the pixels array
-      int location = x + y * image.width;
-
-      if (brightness(image.pixels[location]) < threshold) {
-        targets.add(new PVector(x, y));
+  if (level == 1){currentMap = img3;}
+  else if (level == 2){currentMap = img2;}
+  else if (level == 3){currentMap = img1;}
+  
+  int loc = int(player.target.x) + int(player.target.y) * currentMap.width;
+  float b = brightness(currentMap.pixels[loc]);
+  
+  int loc2 = int(player.position.x) + int(player.position.y) * currentMap.width;
+  float b2 = brightness(currentMap.pixels[loc2]);
+  
+  if ((player.position.dist(mouse) < 20))
+  {
+    player.target.x = mouse.x;
+    player.target.y = mouse.y;
+    
+    while (player.target.x > player.position.x){
+      if (!(b < threshold)){
+        player.position.x++;
+      } else {
+        if (b2 < threshold){
+        player.position.x-=20;}
+        break;
       }
     }
-  } 
-}
+    while (player.target.x < player.position.x){
+      if (!(b < threshold)){
+        player.position.x--;
+      } else {
+        if (b2 < threshold){
+        player.position.x+=20;}
+        break;
+      }
+    }
 
-void switchUp(Creature creature, ArrayList<PVector> targets, color col) {
-  int targetIndex = int(random(0, targets.size()));
-  creature.target = targets.get(targetIndex);
-  creature.col = col;
+    while (player.target.y > player.position.y){
+      if (!(b < threshold)){
+        player.position.y++;
+      } else {
+        if (b2 < threshold){
+        player.position.y-=20;}
+        break;
+      }
+    }
+    while (player.target.y < player.position.y){
+      if (!(b < threshold)){
+        player.position.y--;
+      } else {
+        if (b2 < threshold){
+        player.position.y+=20;}
+        break;
+      }
+    }
+  }
   
+  
+  
+  
+  player.run(); 
+  surface.setTitle("" + frameRate);
 }

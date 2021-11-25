@@ -4,24 +4,19 @@ class Player {
   float speed;
   float dotSize;
   boolean ready;
+  PImage terrain;
   
   Player(color _col) {
-    position = new PVector(50,height);
-    target = new PVector(mouseX, mouseY);
+    position = new PVector(50,height - 50);
+    target = new PVector(50, height - 50);
     col = _col;
     speed = 0.1;
-    dotSize = 40;
+    dotSize = 20;
     ready = false;
   }
   
   void update() {
-    target.x=mouseX;
-    target.y=mouseY;
-    if (position.dist(target) < 40)
-    {
-      position.x=target.x;
-      position.y=target.y;
-    }
+    
   }
   
   void draw() {

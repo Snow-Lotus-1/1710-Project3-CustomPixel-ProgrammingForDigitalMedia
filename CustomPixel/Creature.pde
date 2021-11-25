@@ -24,6 +24,7 @@ class Creature {
     stroke(col);
     strokeWeight(size);
     point(position.x, position.y);
+    //triangle(position.x, position.y-3, position.x-2, position.y+2, position.x+2, position.y+2);
   }
   
   void run() {
