@@ -3,7 +3,7 @@
 PImage img1, img2, img3;
 ArrayList<Creature> creatures;
 ArrayList<PVector> targets1, targets2, targets3;
-int scaler = 2; // will use only every 2nd pixel from the image
+int scaler = 4; // will use only every 2nd pixel from the image
 int threshold = 200;
 boolean imageToggled = false;
 color col;
@@ -115,9 +115,7 @@ void draw() {
         creature.target = targets3.get(targetIndex);
         creature.col = col;
       }
-    }
-    
-    
+    } //<>//
   }
   
   PVector mouse = new PVector(mouseX, mouseY);
@@ -126,13 +124,15 @@ void draw() {
   else if (level == 2){currentMap = img2;}
   else if (level == 3){currentMap = img1;}
   
+  color unknown = color((int(0)), int(0), int(0));
+  
   int loc = int(player.target.x) + int(player.target.y) * currentMap.width;
   float b = brightness(currentMap.pixels[loc]);
   
   int loc2 = int(player.position.x) + int(player.position.y) * currentMap.width;
   float b2 = brightness(currentMap.pixels[loc2]);
   
-  if ((player.position.dist(mouse) < 20))
+  if ((player.position.dist(mouse) < 30))
   {
     player.target.x = mouse.x;
     player.target.y = mouse.y;
@@ -175,9 +175,29 @@ void draw() {
       }
     }
   }
+  for (Creature creature : creatures) {
+    if (flipTargets)
+      {
+      if (creature.position.dist(mouse) < 75 || creature.position.dist(player.position) < 100)
+      {
+        creature.col = col;
+      }
+      else
+      {
+        creature.col = unknown;
+      }
+    }
+  }
   
-  
-  
+  if(level%2 != 0) {   
+    fill(0, 200, 0, 50);
+    rect(width-200, 0, 200, 100, 0, 0, 60, 60);
+  }
+  else if (level%2 == 0) {
+    fill(0, 200, 0, 50);
+    noStroke();
+    rect(0, height-100, 200, 100, 60, 60, 0, 0);
+  }
   
   player.run(); 
   surface.setTitle("" + frameRate);
