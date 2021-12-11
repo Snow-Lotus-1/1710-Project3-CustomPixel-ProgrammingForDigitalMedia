@@ -1,3 +1,4 @@
+//Code based off of PixelExample7
 class Player {  
   PVector position, target;
   color col;
@@ -6,10 +7,10 @@ class Player {
   boolean ready;
   PImage terrain;
   
-  Player(color _col) {
+  Player(color colIn) {
     position = new PVector(50,height - 50);
     target = new PVector(50, height - 50);
-    col = _col;
+    col = colIn;
     speed = 0.1;
     dotSize = 20;
     ready = false;

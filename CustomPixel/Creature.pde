@@ -1,3 +1,4 @@
+//Code based off of PixelExample6
 class Creature {
 
   PVector position, target;
@@ -6,10 +7,10 @@ class Creature {
   float size;
   boolean ready;
   
-  Creature(float x, float y, color _col, PVector _target) {
+  Creature(float x, float y, color colIn, PVector targetIn) {
     position = new PVector(x, y);
-    col = _col;
-    target = _target;
+    col = colIn;
+    target = targetIn;
     speed = 0.1;
     size = 10;
     ready = false;
@@ -24,6 +25,8 @@ class Creature {
     stroke(col);
     strokeWeight(size);
     point(position.x, position.y);
+    
+    //triangles lag the game so much, don't use
     //triangle(position.x, position.y-3, position.x-2, position.y+2, position.x+2, position.y+2);
   }
   

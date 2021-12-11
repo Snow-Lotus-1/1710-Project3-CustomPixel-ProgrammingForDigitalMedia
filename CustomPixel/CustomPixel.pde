@@ -1,4 +1,6 @@
-//Code from PixelExample6
+//Code based off of PixelExample6 and PixelExample7
+//Instructions for game in ReadMe
+//Source for images (links) also in the ReadMe
 
 PImage img1, img2, img3;
 ArrayList<Creature> creatures;
@@ -32,6 +34,7 @@ void setup() {
 
   col = color(255, 255, 255);
     
+  //Maze1
   for (int x = 0; x < img1.width; x += scaler) {
     for (int y = 0; y < img1.height; y += scaler) {
       // this translates x and y coordinates into a location in the pixels array
@@ -43,6 +46,7 @@ void setup() {
     }
   } 
   
+  //Maze2
   for (int x = 0; x < img2.width; x += scaler) {
     for (int y = 0; y < img2.height; y += scaler) {
       // this translates x and y coordinates into a location in the pixels array
@@ -54,6 +58,7 @@ void setup() {
     }
   } 
   
+  //Maze3
   creatures = new ArrayList<Creature>();
   for (int x = 0; x < img3.width; x += scaler) {
     for (int y = 0; y < img3.height; y += scaler) {
@@ -70,6 +75,7 @@ void setup() {
     }
   } 
   
+  //player is a red dot
   color red = color(250, 125, 125);
   player = new Player(red);
 }
@@ -86,12 +92,13 @@ void draw() {
     if (!creature.ready) flipTargets = false;
   }
   
-
+  //if they reach the goal, change map
   if((player.position.y == 0 && level%2 != 0) || (player.position.y == height-1 && level%2 == 0)) {
      goal = true; 
      level++;
   }
   
+  //only goes up to level 5
   if (flipTargets == true && goal == true) {
     for (Creature creature : creatures) {
       if (level == 1) {
@@ -120,18 +127,22 @@ void draw() {
   
   PVector mouse = new PVector(mouseX, mouseY);
   
+  //finds the current map
   if (level == 1){currentMap = img3;}
   else if (level == 2){currentMap = img2;}
   else if (level == 3){currentMap = img1;}
   
   color unknown = color((int(0)), int(0), int(0));
   
+  //where the player wants to go
   int loc = int(player.target.x) + int(player.target.y) * currentMap.width;
   float b = brightness(currentMap.pixels[loc]);
   
+  //where the play is
   int loc2 = int(player.position.x) + int(player.position.y) * currentMap.width;
   float b2 = brightness(currentMap.pixels[loc2]);
   
+  //collision can be buggy at the best of time (easy to clip through walls if you try) but is functional
   if ((player.position.dist(mouse) < 30))
   {
     player.target.x = mouse.x;
@@ -175,6 +186,8 @@ void draw() {
       }
     }
   }
+  
+  //hides all the creatures not in flashlight zone, so they are unknown (black)
   for (Creature creature : creatures) {
     if (flipTargets)
       {
@@ -189,6 +202,7 @@ void draw() {
     }
   }
   
+  //green goal 
   if(level%2 != 0) {   
     fill(0, 200, 0, 50);
     rect(width-200, 0, 200, 100, 0, 0, 60, 60);
