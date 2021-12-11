@@ -7,16 +7,18 @@ Green patch is just there to give a general idea of where the goal is at all tim
 There are 3 maps to clear
 use the mouse as a flashlight to guide the "player" through the maze
 
+There are some emergency options to teleport the player to the mouse and change the level, but this should not be used unless the play is inacessable cause the screen is too small and can't fit a 1000x1000 application
+
 Links for images used:
-Maze3
+Maze3:
 https://dinopixel.com/pixel-art/maze%20stage%201/105 
 https://dinopixel.com/preload/maze-1.png
  
-Maze2
+Maze2:
 https://www.brik.co/blogs/designs/maze-normal
 https://cdn.apps.joltteam.com/brikbuild/maze---normal-pixel-art-pixel-art-maze-puzzle-path-pixel-8bit-1526876572870.brickImg.jpg
 
-Maze1
+Maze1:
 http://pixelartmaker.com/art/11c811f4ab1ae8c
 https://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/11c811f4ab1ae8c.png
 
